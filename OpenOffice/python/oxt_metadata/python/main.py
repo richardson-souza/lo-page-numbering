@@ -38,7 +38,8 @@ def copyPropertySet(smgr, ctx, srcObj, dstObj):
         "com.sun.star.script.provider.MasterScriptProviderFactory", ctx)
     script_provider = mspf.createScriptProvider("")
     script = script_provider.getScript(
-        "vnd.sun.star.script:PageStyleClone.PageStyle.copyPropertySet?language=Basic&location=application")
+        'vnd.sun.star.script:PageStyleClone.PageStyle.'
+        'copyPropertySet?language=Basic&location=application')
     script.invoke((srcObj, dstObj), (), ())
     return dstObj
 
@@ -65,7 +66,8 @@ def main(*args):
     _ = ui_locale.gettext
 
     '''
-    Get the doc from the scripting context which is made available to all scripts
+    Get the doc from the scripting
+    context which is made available to all scripts
     '''
     Doc = XSCRIPTCONTEXT.getDocument()
     UndoManager = Doc.getUndoManager()
@@ -73,7 +75,8 @@ def main(*args):
     dp = psm.createInstance("com.sun.star.awt.DialogProvider")
 
     dlg = dp.createDialog(
-        "vnd.sun.star.extension://com.addon.pagenumbering/dialogs/PageNumberingDialog.xdl")
+        'vnd.sun.star.extension://com.addon.'
+        'pagenumbering/dialogs/PageNumberingDialog.xdl')
 
     # Initialize the required fields
     oDialog1Model = dlg.Model
@@ -199,7 +202,7 @@ def main(*args):
 
     oUDP = Doc.getDocumentProperties().UserDefinedProperties
 
-    if oUDP.getPropertySetInfo().hasPropertyByName("NumberingStyleIndex") == False:
+    if oUDP.getPropertySetInfo().hasPropertyByName("NumberingStyleIndex") is False:
         maybevoid = uno.getConstantByName(
             "com.sun.star.beans.PropertyAttribute.MAYBEVOID")
         removeable = uno.getConstantByName(
@@ -217,7 +220,7 @@ def main(*args):
     NewStyle.FollowStyle = "PageNumbering-Start(" + str(
         FirstNumberedPage.Value) + ")-Index:" + str(oUDP.NumberingStyleIndex)
 
-    if PageStyles.hasByName(NewStyle.FollowStyle) == False:
+    if PageStyles.hasByName(NewStyle.FollowStyle) is False:
         PageStyles.insertByName(NewStyle.FollowStyle, NewStyle)
 
     # Whatever is Standard will get numbering
@@ -240,14 +243,17 @@ def main(*args):
     # For text insertion a Text cursor is needed
     NumCursor = Num_Position.Text.createTextCursor()
 
-    '''There should be included all those changing operations that should be put in undo stack
+    '''
+    There should be included all thos
+    changing operations that should be put in undo stack
     '''
     UndoManager.enterUndoContext(_("Page Numbering"))
 
     ViewCursor.jumpToPage(FirstNumberedPage.Value)
 
     '''Set index of first numbered page
-    We cannot use PageNumber.Offset property because we may need bigger than total page number indexing
+    We cannot use PageNumber.Offset property
+    because we may need bigger than total page number indexing
     '''
     ViewCursor.PageNumberOffset = FirstNumberedIndex.Value
 
@@ -376,7 +382,7 @@ def copyUsingPropertySetInfo(srcObj, dstObj):
                     oSValue = srcObj.getPropertyValue(oProp.Name)
                     if canCopyTypeWithAssignment(oSValue):
                         if (uno.getConstantByName(
-                                "com.sun.star.beans.PropertyAttribute.READONLY") and oProp.Attributes) == False:
+                                "com.sun.star.beans.PropertyAttribute.READONLY") and oProp.Attributes) is False:
                             if oProp.Name != "GridLines":
                                 dstObj.setPropertyValue(oProp.Name, oSValue)
                     elif uno.IsArray(oSValue):
@@ -385,7 +391,8 @@ def copyUsingPropertySetInfo(srcObj, dstObj):
                         oDValue = dstObj.getPropertyValue(oProp.Name)
                         if oDValue is None or uno.IsEmpty(oDValue):
                             if (uno.getConstantByName(
-                                    "com.sun.star.beans.PropertyAttribute.READONLY") and oProp.Attributes) == False:
+                                    'com.sun.star.beans.'
+                                    'PropertyAttribute.READONLY') and oProp.Attributes) is False:
                                 dstObj.setPropertyValue(oProp.Name, oSValue)
                             elif uno.HasUnoInterfaces(oSValue, "com.sun.star.beans.XPropertySet"):
                                 if oSValue.SupportsService(
@@ -402,7 +409,10 @@ def canCopyTypeWithAssignment(oObj):
     case_check = uno.VarType(oObj)
     if case_check <= 8:
         return True
-    elif case_check == 11 or case_check == 35 or case_check == 36 or case_check == 37:
+    elif (case_check == 11 or
+          case_check == 35 or
+          case_check == 36 or
+          case_check == 37):
         return True
     elif case_check <= 23 and case_check >= 16:
         return True
@@ -413,7 +423,8 @@ def canCopyTypeWithAssignment(oObj):
             return False
 
 
-'''Inspired by @sng at https://forum.openoffice.org/en/forum/viewtopic.php?f=45&t=81457
+'''Inspired by @sng at
+https://forum.openoffice.org/en/forum/viewtopic.php?f=45&t=81457
 and Andrew Pitonyak pdf "Useful Useful Macro Information For OpenOffice.org"
 '''
 
@@ -464,3 +475,4 @@ g_ImplementationHelper.addImplementation(
     "com.sun.star.awt.XTopWindowListener", ()
 )
 g_exportedScripts = main,
+
